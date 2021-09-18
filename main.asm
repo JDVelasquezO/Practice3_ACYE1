@@ -15,15 +15,22 @@ include macros.asm
 
     name1 db "Nombre de jugador 1: $"
     name2 db "Nombre de jugador 2: $"
+    fichaBlanca db "Turno Ficha: Blanca $"
+    fichaNegra db "Turno Ficha Negra: $"
     tokenP1 db "Color de ficha jugador 1 B/N [1/2]: $"
+    digitEnter db " mueve la ficha de tu gusto: $"
     bufferP1 db 50 dup("$"), "$"
     bufferP2 db 50 dup("$"), "$"
+    bufferTeclado db 50 dup("$"), "$"
     bufferKey db 50 dup("$"), "$"
     individual db " $"
     espacio db " $"
     dobleEspacio db '  ','$'
     lineas db "|-$"
     salto db 0ah, "$"
+    valida db " ingresa un valor valido $"
+    validaPlayer db "Debes ingresar nombre de jugador $"
+    
     iteradorI dw 0
     iteradorJ dw 0
     iteradork dw 0
@@ -31,7 +38,7 @@ include macros.asm
     tablero db 64 dup(0), "$"
     fila dw 0
     columna dw 0
-
+    
     cabecerasF db "12345678$"
     cabecerasC db "ABCDEFGH$"
 
@@ -69,6 +76,11 @@ include macros.asm
             jmp menu_offset
 
         play:
+            cmp bufferP1[0], "$"
+            je invalidName
+            cmp bufferP2[0], "$"
+            je invalidName
+
             ImprimirEspacio al
             print tokenP1
             readUntilEnter bufferKey
@@ -77,10 +89,25 @@ include macros.asm
             je whiteTurn
             jmp blackTurn
 
-        whiteTurn:
-            imprimirMatriz
-            readUntilEnter bufferKey
+        invalidName:
+            ImprimirEspacio al
+            print validaPlayer
+            readUntilEnter bufferTeclado
             jmp menu_offset
+
+        whiteTurn:
+            print name1
+            print bufferP1
+            ImprimirEspacio al
+            print fichaBlanca
+            ImprimirEspacio al
+            ImprimirEspacio al
+            imprimirMatriz
+            ImprimirEspacio al
+            leerCelda bufferP1
+            readUntilEnter bufferTeclado
+            ; clearTerminal
+            ; jmp menu_offset
 
         blackTurn:
             jmp menu_offset

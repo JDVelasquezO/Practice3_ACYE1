@@ -189,7 +189,7 @@ imprimirMatriz macro
 
         validateImpair:
             mov color, 14d
-            mov individual[0], "X"
+            mov individual[0], "B"
             jmp regreso1
 
         pairFile:
@@ -224,7 +224,7 @@ imprimirMatriz macro
         validatePair:
             ; inc di
             mov color, 14d
-            mov individual[0], "O"
+            mov individual[0], "N"
             jmp regreso1
 
         reinicio: ;ciclo que imprime la linea divisoria entre filas
@@ -252,11 +252,69 @@ imprimirMatriz macro
     fin:
 endm
 
-obtenerIndice macro row, column
-    ;posicion[i][j] en el arreglo = i * numero columnas + j 
-    mov ax, row
-    mov bx, 3d 
-    mul bx
-    add ax, column
-    mov indice, ax
+leerCelda macro name
+    print name, 15d
+    print digitEnter
+    readUntilEnter bufferTeclado
+    xor di, di
+    xor ax, ax
+
+    mov ah, bufferTeclado[0]
+    mov al, bufferTeclado[1]
+    mov bl, bufferTeclado[3]
+    mov bh, bufferTeclado[4]
 endm
+
+; leerFila macro name
+;     local inicio, ciclo, asignar
+
+;     inicio:
+;         imprimir name, 15d
+;         imprimir ingresa, 15d
+;         readUntilEnter bufferTeclado
+;         xor di, di
+;         mov bl, bufferTeclado[0]
+
+;     ciclo: ;ciclo para comparar el valor ingresado con las filas disponibles
+;         cmp cabecerasF[di], bl
+;         jz asignar
+;         inc di
+;         cmp di, 8d
+;         jnz ciclo
+
+;     imprimir salto, 0d
+;     imprimir name, 1100b
+;     imprimir valida, 1100b
+;     imprimir salto, 0d
+;     imprimir salto, 0d
+;     jmp inicio
+
+;     asignar:
+;         mov fila, di
+; endm
+
+; leerColumna macro name
+;     local inicio, ciclo, asignar
+
+;     inicio:
+;         imprimir name, 15d
+;         imprimir ingresa2, 15d
+;         leerHastaEnter bufferTeclado
+;         xor di, di
+;         mov bl, bufferTeclado[0]
+
+;     ciclo: ;ciclo para comparar el valor ingresado con las filas disponibles
+;         cmp cabecerasC[di], bl
+;         jz asignar
+;         inc di
+;         cmp di, 3d
+;         jnz ciclo
+
+;     imprimir name, 1100b
+;     imprimir valida, 1100b
+;     imprimir salto, 0d
+;     jmp inicio
+
+;     asignar:
+;         mov columna, di
+; endm
