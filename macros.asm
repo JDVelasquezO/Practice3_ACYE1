@@ -253,68 +253,87 @@ imprimirMatriz macro
 endm
 
 leerCelda macro name
-    print name, 15d
-    print digitEnter
-    readUntilEnter bufferTeclado
-    xor di, di
-    xor ax, ax
+    local inicio, ciclo, asignar
 
-    mov ah, bufferTeclado[0]
-    mov al, bufferTeclado[1]
-    mov bl, bufferTeclado[3]
-    mov bh, bufferTeclado[4]
+    inicio:
+        print name, 15d
+        print digitEnter
+        readUntilEnter bufferTeclado
+        xor di, di
+        xor ax, ax
+        xor bx, bx
+        xor si, si
+
+        mov ah, bufferTeclado[1]
+        mov al, bufferTeclado[0]
+        mov bh, bufferTeclado[4]
+        ; mov bl, bufferTeclado[3]
+
+    ; CICLO PARA FILA 1
+    ciclo:
+        cmp cabecerasF[di], ah
+        jz asignar
+        inc di
+        cmp di, 8d
+        jnz ciclo
+
+    imprimir salto, 0d
+    imprimir name, 1100b
+    imprimir valida, 1100b
+    imprimir salto, 0d
+    imprimir salto, 0d
+    jmp inicio
+
+    asignar:
+        mov fila1, di
+
+    ; CICLO PARA FILA 2
+    ciclo2:
+        cmp cabecerasF[si], bh
+        jz asignar2
+        inc si
+        cmp si, 8d
+        jnz ciclo2
+
+    imprimir salto, 0d
+    imprimir name, 1100b
+    imprimir valida, 1100b
+    imprimir salto, 0d
+    imprimir salto, 0d
+    jmp inicio
+
+    asignar2:
+        mov fila2, si
+
+    ; CICLO PARA COLUMNA 1
+    ciclo3:
+        cmp cabecerasC[di], al
+        jz asignar3
+        inc di
+        cmp di, 3d
+        jnz ciclo3
+
+    imprimir name, 1100b
+    imprimir valida, 1100b
+    imprimir salto, 0d
+    jmp inicio
+
+    asignar3:
+        mov columna1, di
+
+    ; CICLO PARA COLUMNA 2
+    ciclo4:
+        cmp cabecerasC[si], bl
+        jz asignar4
+        inc si
+        cmp si, 3d
+        jnz ciclo4
+
+    imprimir name, 1100b
+    imprimir valida, 1100b
+    imprimir salto, 0d
+    jmp inicio
+
+    asignar4:
+        mov columna2, si
 endm
-
-; leerFila macro name
-;     local inicio, ciclo, asignar
-
-;     inicio:
-;         imprimir name, 15d
-;         imprimir ingresa, 15d
-;         readUntilEnter bufferTeclado
-;         xor di, di
-;         mov bl, bufferTeclado[0]
-
-;     ciclo: ;ciclo para comparar el valor ingresado con las filas disponibles
-;         cmp cabecerasF[di], bl
-;         jz asignar
-;         inc di
-;         cmp di, 8d
-;         jnz ciclo
-
-;     imprimir salto, 0d
-;     imprimir name, 1100b
-;     imprimir valida, 1100b
-;     imprimir salto, 0d
-;     imprimir salto, 0d
-;     jmp inicio
-
-;     asignar:
-;         mov fila, di
-; endm
-
-; leerColumna macro name
-;     local inicio, ciclo, asignar
-
-;     inicio:
-;         imprimir name, 15d
-;         imprimir ingresa2, 15d
-;         leerHastaEnter bufferTeclado
-;         xor di, di
-;         mov bl, bufferTeclado[0]
-
-;     ciclo: ;ciclo para comparar el valor ingresado con las filas disponibles
-;         cmp cabecerasC[di], bl
-;         jz asignar
-;         inc di
-;         cmp di, 3d
-;         jnz ciclo
-
-;     imprimir name, 1100b
-;     imprimir valida, 1100b
-;     imprimir salto, 0d
-;     jmp inicio
-
-;     asignar:
-;         mov columna, di
-; endm

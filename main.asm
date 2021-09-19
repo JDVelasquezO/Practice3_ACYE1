@@ -28,7 +28,7 @@ include macros.asm
     dobleEspacio db '  ','$'
     lineas db "|-$"
     salto db 0ah, "$"
-    valida db " ingresa un valor valido $"
+    valida db " ingresa un valor valido. Presiona enter para continuar... $"
     validaPlayer db "Debes ingresar nombre de jugador $"
     
     iteradorI dw 0
@@ -36,8 +36,10 @@ include macros.asm
     iteradork dw 0
     color db 0
     tablero db 64 dup(0), "$"
-    fila dw 0
-    columna dw 0
+    fila1 dw 0
+    fila2 dw 0
+    columna1 dw 0
+    columna2 dw 0
     
     cabecerasF db "12345678$"
     cabecerasC db "ABCDEFGH$"
