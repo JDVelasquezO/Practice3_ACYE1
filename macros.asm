@@ -259,15 +259,15 @@ leerCelda macro name
         print name, 15d
         print digitEnter
         readUntilEnter bufferTeclado
-        xor di, di
         xor ax, ax
         xor bx, bx
         xor si, si
+        xor di, di
 
         mov ah, bufferTeclado[1]
         mov al, bufferTeclado[0]
         mov bh, bufferTeclado[4]
-        ; mov bl, bufferTeclado[3]
+        mov bl, bufferTeclado[3]
 
     ; CICLO PARA FILA 1
     ciclo:
@@ -287,6 +287,23 @@ leerCelda macro name
     asignar:
         mov fila1, di
 
+    xor di, di
+    ; CICLO PARA COLUMNA 1
+    ciclo3:
+        cmp cabecerasC[di], al
+        jz asignar3
+        inc di
+        cmp di, 8d
+        jnz ciclo3
+
+    imprimir name, 1100b
+    imprimir valida, 1100b
+    imprimir salto, 0d
+    jmp inicio
+
+    asignar3:
+        mov columna1, di
+
     ; CICLO PARA FILA 2
     ciclo2:
         cmp cabecerasF[si], bh
@@ -305,28 +322,13 @@ leerCelda macro name
     asignar2:
         mov fila2, si
 
-    ; CICLO PARA COLUMNA 1
-    ciclo3:
-        cmp cabecerasC[di], al
-        jz asignar3
-        inc di
-        cmp di, 3d
-        jnz ciclo3
-
-    imprimir name, 1100b
-    imprimir valida, 1100b
-    imprimir salto, 0d
-    jmp inicio
-
-    asignar3:
-        mov columna1, di
-
+    xor si, si
     ; CICLO PARA COLUMNA 2
     ciclo4:
         cmp cabecerasC[si], bl
         jz asignar4
         inc si
-        cmp si, 3d
+        cmp si, 8d
         jnz ciclo4
 
     imprimir name, 1100b
@@ -336,4 +338,15 @@ leerCelda macro name
 
     asignar4:
         mov columna2, si
+endm
+
+obtenerIndice macro row, column
+    xor ax, ax
+    xor bx, bx
+    ;posicion[i][j] en el arreglo = i * numero columnas + j
+    mov ax, row
+    mov bx, 8d
+    mul bx
+    add ax, column
+    mov indice, ax
 endm

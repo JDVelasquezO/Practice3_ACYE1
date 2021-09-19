@@ -19,6 +19,10 @@ include macros.asm
     fichaNegra db "Turno Ficha Negra: $"
     tokenP1 db "Color de ficha jugador 1 B/N [1/2]: $"
     digitEnter db " mueve la ficha de tu gusto: $"
+    valida db " ingresa un valor valido. $"
+    validaPlayer db "Debes ingresar nombre de jugador. Presiona enter para continuar... $"
+    mensajeOcupada db "casilla ocupada, intenta otra vez$"
+
     bufferP1 db 50 dup("$"), "$"
     bufferP2 db 50 dup("$"), "$"
     bufferTeclado db 50 dup("$"), "$"
@@ -28,18 +32,19 @@ include macros.asm
     dobleEspacio db '  ','$'
     lineas db "|-$"
     salto db 0ah, "$"
-    valida db " ingresa un valor valido. Presiona enter para continuar... $"
-    validaPlayer db "Debes ingresar nombre de jugador $"
     
     iteradorI dw 0
     iteradorJ dw 0
     iteradork dw 0
     color db 0
     tablero db 64 dup(0), "$"
+    tipoJugador1 db 0
+    tipoJugador2 db 0
     fila1 dw 0
     fila2 dw 0
     columna1 dw 0
     columna2 dw 0
+    indice dw 0
     
     cabecerasF db "12345678$"
     cabecerasC db "ABCDEFGH$"
@@ -98,21 +103,42 @@ include macros.asm
             jmp menu_offset
 
         whiteTurn:
+            ; Impresiones de turno
             print name1
             print bufferP1
             ImprimirEspacio al
             print fichaBlanca
             ImprimirEspacio al
             ImprimirEspacio al
+
+            ; Impresion de tablero
             imprimirMatriz
             ImprimirEspacio al
+
+            ; Pedir celda
             leerCelda bufferP1
-            readUntilEnter bufferTeclado
+            
+            ; Obtener indice de fila y col 1
+            ; obtenerIndice fila2, columna2
+            ; mov di, indice
+            ; mov al, tipoJugador1
+            ; cmp tablero[di], 0d
+            ; jnz ocupada
+            ; mov tablero[di], al
+            readUntilEnter bufferKey
+
             ; clearTerminal
             ; jmp menu_offset
 
         blackTurn:
             jmp menu_offset
+
+        ocupada:
+            imprimir salto, 0d
+            imprimir mensajeOcupada, 10001110b
+            imprimir salto, 0d
+            imprimir salto, 0d
+            jmp whiteTurn
 
         exit:
             mov ah, 4ch
