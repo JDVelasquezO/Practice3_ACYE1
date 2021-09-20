@@ -41,6 +41,7 @@ include macros.asm
     iteradorI dw 0
     iteradorJ dw 0
     iteradork dw 0
+    iteradorTable db 0
     color db 0
     tablero db 64 dup(0), "$"
     tipoJugador1 db 0
@@ -108,19 +109,25 @@ include macros.asm
             jmp menu_offset
 
         whiteTurn:
+            ; Impresion de tablero
+            imprimirMatriz
+
             ; Impresiones de turno
+            ImprimirEspacio al
+            ImprimirEspacio al
+            ImprimirEspacio al
+            ImprimirEspacio al
+            ImprimirEspacio al
             print name1
             print bufferP1
             ImprimirEspacio al
             print fichaBlanca
             ImprimirEspacio al
             ImprimirEspacio al
-
-            ; Impresion de tablero
-            imprimirMatriz
             ImprimirEspacio al
-
-            ; Pedir celda
+            
+            reImprimirMatriz
+            ImprimirEspacio al
             leerCelda bufferP1
             
             ; Obtener indice de fila y col, y validar si se puede mover
@@ -136,14 +143,9 @@ include macros.asm
             obtenerIndice fila1, columna1
             mov si, indice
             mov tablero[si], 0d
-
-            imprimir salto, 0d
-            imprimir salto, 0d
-            reImprimirMatriz
-            imprimir salto, 0d
-            imprimir salto, 0d
-            readUntilEnter bufferKey
             jmp blackTurn
+
+            inc iteradorTable
 
         blackTurn:
             print name2
@@ -170,14 +172,9 @@ include macros.asm
             obtenerIndice fila1, columna1
             mov si, indice
             mov tablero[si], 0d
-
-            imprimir salto, 0d
-            imprimir salto, 0d
-            reImprimirMatriz
-            imprimir salto, 0d
-            imprimir salto, 0d
-            readUntilEnter bufferKey
             jmp whiteTurn
+
+            inc iteradorTable
 
         ocupada:
             imprimir salto, 0d
