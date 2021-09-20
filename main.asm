@@ -22,6 +22,8 @@ include macros.asm
     valida db " ingresa un valor valido. $"
     validaPlayer db "Debes ingresar nombre de jugador. Presiona enter para continuar... $"
     mensajeOcupada db "casilla ocupada, intenta otra vez$"
+    mensajeBadMoveV db " no puedes moverte de forma vertical, solo diagonal$"
+    mensajeBadMoveH db " no puedes moverte de forma horizontal, solo diagonal$"
 
     bufferP1 db 50 dup("$"), "$"
     bufferP2 db 50 dup("$"), "$"

@@ -306,7 +306,7 @@ imprimirMatriz macro
 endm
 
 leerCelda macro name
-    local inicio, ciclo, ciclo2, ciclo3, ciclo4, asignar, asignar2, asignar3, asignar4
+    local inicio, ciclo, ciclo2, ciclo3, ciclo4, asignar, asignar2, asignar3, asignar4, badMoveVertical, badMoveHorizontal, fin
 
     inicio:
         print name, 15d
@@ -321,6 +321,11 @@ leerCelda macro name
         mov al, bufferTeclado[0]
         mov bh, bufferTeclado[4]
         mov bl, bufferTeclado[3]
+
+        cmp ah, bh
+        je badMoveVertical
+        cmp al, bl
+        je badMoveHorizontal
 
     ; CICLO PARA FILA 1
     ciclo:
@@ -340,23 +345,6 @@ leerCelda macro name
     asignar:
         mov fila1, di
 
-    xor di, di
-    ; CICLO PARA COLUMNA 1
-    ciclo3:
-        cmp cabecerasC[di], al
-        jz asignar3
-        inc di
-        cmp di, 8d
-        jnz ciclo3
-
-    imprimir name, 1100b
-    imprimir valida, 1100b
-    imprimir salto, 0d
-    jmp inicio
-
-    asignar3:
-        mov columna1, di
-
     ; CICLO PARA FILA 2
     ciclo2:
         cmp cabecerasF[si], bh
@@ -375,6 +363,23 @@ leerCelda macro name
     asignar2:
         mov fila2, si
 
+    xor di, di
+    ; CICLO PARA COLUMNA 1
+    ciclo3:
+        cmp cabecerasC[di], al
+        jz asignar3
+        inc di
+        cmp di, 8d
+        jnz ciclo3
+
+    imprimir name, 1100b
+    imprimir valida, 1100b
+    imprimir salto, 0d
+    jmp inicio
+
+    asignar3:
+        mov columna1, di
+
     xor si, si
     ; CICLO PARA COLUMNA 2
     ciclo4:
@@ -391,6 +396,25 @@ leerCelda macro name
 
     asignar4:
         mov columna2, si
+        jmp fin
+
+    badMoveVertical:
+        imprimir salto, 0d
+        imprimir name, 1100b
+        imprimir mensajeBadMoveV, 1100b
+        imprimir salto, 0d
+        imprimir salto, 0d
+        jmp inicio
+
+    badMoveHorizontal:
+        imprimir salto, 0d
+        imprimir name, 1100b
+        imprimir mensajeBadMoveH, 1100b
+        imprimir salto, 0d
+        imprimir salto, 0d
+        jmp inicio
+    
+    fin:
 endm
 
 obtenerIndice macro row, column
