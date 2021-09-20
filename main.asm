@@ -141,12 +141,41 @@ include macros.asm
             imprimir salto, 0d
             imprimir salto, 0d
             readUntilEnter bufferKey
-
-            ; clearTerminal
-            ; jmp menu_offset
+            jmp blackTurn
 
         blackTurn:
-            jmp menu_offset
+            print name2
+            print bufferP2
+            ImprimirEspacio al
+            print fichaNegra
+            ImprimirEspacio al
+            ImprimirEspacio al
+
+            ; Impresion de tablero
+            reImprimirMatriz
+            ImprimirEspacio al
+            leerCelda bufferP2
+
+            xor di, di
+            xor si, si
+            xor ax, ax
+            obtenerIndice fila2, columna2
+            mov di, indice
+            cmp tablero[di], 0d
+            jnz ocupada
+            mov tablero[di], 2d
+
+            obtenerIndice fila1, columna1
+            mov si, indice
+            mov tablero[si], 0d
+
+            imprimir salto, 0d
+            imprimir salto, 0d
+            reImprimirMatriz
+            imprimir salto, 0d
+            imprimir salto, 0d
+            readUntilEnter bufferKey
+            jmp whiteTurn
 
         ocupada:
             imprimir salto, 0d

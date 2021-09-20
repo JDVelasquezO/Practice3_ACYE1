@@ -89,7 +89,7 @@ verificarValor macro
 endm
 
 imprimirMatriz macro
-    local ciclo, ciclo2, ciclo3, ciclo4, reinicio, reinicio2, regreso1, quitChars, blackToken, moveCellImpair, regresoImpair1, validateImpair, incrementForImpairBlack, incrementForImpair, validateImpair, pairFile, regresoPair1, validatePair, moveCell, fin
+    local ciclo, ciclo2, ciclo3, ciclo4, reinicio, reinicio2, regreso1, quitChars, blackToken, moveCellImpair, regresoImpair1, validateImpair, incrementForImpairBlack, incrementForImpair, validateImpair, pairFile, regresoPair1, validatePair, moveCell, fin, fillRow, fillRow2
 
     imprimir espacio, 0d    ; color negro
     imprimir espacio, 0d 
@@ -306,7 +306,7 @@ imprimirMatriz macro
 endm
 
 leerCelda macro name
-    local inicio, ciclo, asignar
+    local inicio, ciclo, ciclo2, ciclo3, ciclo4, asignar, asignar2, asignar3, asignar4
 
     inicio:
         print name, 15d
