@@ -32,6 +32,9 @@ include macros.asm
     dobleEspacio db '  ','$'
     lineas db "|-$"
     salto db 0ah, "$"
+    pointer1 dw 0
+    pointer2 dw 0
+    pointerGeneral dw 0
     
     iteradorI dw 0
     iteradorJ dw 0
@@ -118,13 +121,25 @@ include macros.asm
             ; Pedir celda
             leerCelda bufferP1
             
-            ; Obtener indice de fila y col 1
-            ; obtenerIndice fila2, columna2
-            ; mov di, indice
-            ; mov al, tipoJugador1
-            ; cmp tablero[di], 0d
-            ; jnz ocupada
-            ; mov tablero[di], al
+            ; Obtener indice de fila y col, y validar si se puede mover
+            xor di, di
+            xor si, si
+            xor ax, ax
+            obtenerIndice fila2, columna2
+            mov di, indice
+            cmp tablero[di], 0d
+            jnz ocupada
+            mov tablero[di], 1d
+
+            obtenerIndice fila1, columna1
+            mov si, indice
+            mov tablero[si], 0d
+
+            imprimir salto, 0d
+            imprimir salto, 0d
+            reImprimirMatriz
+            imprimir salto, 0d
+            imprimir salto, 0d
             readUntilEnter bufferKey
 
             ; clearTerminal

@@ -89,7 +89,7 @@ verificarValor macro
 endm
 
 imprimirMatriz macro
-    local ciclo, ciclo2, ciclo3, ciclo4, reinicio, reinicio2
+    local ciclo, ciclo2, ciclo3, ciclo4, reinicio, reinicio2, regreso1, quitChars, blackToken, moveCellImpair, regresoImpair1, validateImpair, incrementForImpairBlack, incrementForImpair, validateImpair, pairFile, regresoPair1, validatePair, moveCell, fin
 
     imprimir espacio, 0d    ; color negro
     imprimir espacio, 0d 
@@ -183,13 +183,39 @@ imprimirMatriz macro
             je incrementForImpair
             jmp regresoImpair1
 
-        incrementForImpairBlack:
-            inc di
-            jmp regresoImpair1
-
         validateImpair:
             mov color, 14d
             mov individual[0], "B"
+
+            cmp si, 5
+            je fillRow2
+            cmp si, 7
+            je fillRow2
+
+            mov pointer1, si
+            mov pointer2, di
+            obtenerIndice pointer1, pointer2
+            mov pointerGeneral, di
+            xor di, di
+            mov di, indice
+            mov tablero[di], 1d
+            xor di, di
+            mov di, pointerGeneral
+
+            jmp regreso1
+
+        fillRow2:
+            mov pointer1, si
+            dec di
+            mov pointer2, di
+            obtenerIndice pointer1, pointer2
+            inc di
+            mov pointerGeneral, di
+            xor di, di
+            mov di, indice
+            mov tablero[di], 1d
+            xor di, di
+            mov di, pointerGeneral
             jmp regreso1
 
         pairFile:
@@ -225,6 +251,33 @@ imprimirMatriz macro
             ; inc di
             mov color, 14d
             mov individual[0], "N"
+
+            cmp si, 1
+            je fillRow
+
+            mov pointer1, si
+            mov pointer2, di
+            obtenerIndice pointer1, pointer2
+            mov pointerGeneral, di
+            xor di, di
+            mov di, indice
+            mov tablero[di], 2d
+            xor di, di
+            mov di, pointerGeneral
+            jmp regreso1
+
+        fillRow:
+            mov pointer1, si
+            dec di
+            mov pointer2, di
+            obtenerIndice pointer1, pointer2
+            inc di
+            mov pointerGeneral, di
+            xor di, di
+            mov di, indice
+            mov tablero[di], 2d
+            xor di, di
+            mov di, pointerGeneral
             jmp regreso1
 
         reinicio: ;ciclo que imprime la linea divisoria entre filas
@@ -341,12 +394,108 @@ leerCelda macro name
 endm
 
 obtenerIndice macro row, column
-    xor ax, ax
-    xor bx, bx
     ;posicion[i][j] en el arreglo = i * numero columnas + j
     mov ax, row
     mov bx, 8d
     mul bx
     add ax, column
     mov indice, ax
+endm
+
+reImprimirMatriz macro
+    local ciclo, ciclo2, ciclo3, ciclo4, reinicio, reinicio2, fin
+
+    imprimir espacio, 0d    ; color negro
+    imprimir espacio, 0d 
+    xor si, si
+    ; Ciclo para imprimir las cabeceras de columnas de la matriz
+    ciclo:
+        ; Se mueve hacia una variable que simula un caracter, porque el macro imprimir 
+        ; realiza la impresion hasta que encuentra el simbolo de final de cadena
+        mov bl, cabecerasC[si]
+        mov individual[0], bl
+        imprimir individual, 15d
+        imprimir espacio, 0d
+        imprimir espacio, 0d
+        imprimir espacio, 0d
+        inc si
+        cmp si, 8d
+        jnz ciclo
+
+        imprimir salto, 0d
+        xor si, si
+        mov iteradorJ, 0d
+        ciclo2: ; Ciclo que imprime las caberas de las filas
+            xor di, di
+            mov bl, cabecerasF[si]
+            mov individual[0], bl
+            imprimir individual, 15d
+            imprimir espacio, 0d
+
+            mov iteradorI, 0d
+            ciclo3: ;ciclo que imprime los valores de las filas
+                mov di, iteradorJ
+                verificarValor1 tablero[di]
+                inc iteradorJ
+                imprimir individual, color
+
+                inc iteradorI ;validacion para hacer linea divisioria
+                cmp iteradorI, 8d
+                jz reinicio
+
+                imprimir espacio, 0d
+                mov bl, lineas[0]
+                mov individual[0], bl
+                imprimir individual, 15d
+                imprimir espacio, 0d            
+                jmp ciclo3
+            
+            reinicio: ;ciclo que imprimie la linea divisoria entre filas
+                cmp si, 8d
+                jz reinicio2
+                mov iteradorI, 0d
+                imprimir salto, 0d  
+                imprimir espacio, 0d
+                imprimir espacio, 0d
+                ciclo4:
+                    mov bl, lineas[1]
+                    mov individual[0], bl
+                    imprimir individual, 15d
+                    inc iteradorI
+                    cmp iteradorI, 32d
+                    jnz ciclo4
+            
+            reinicio2:
+            imprimir salto, 0d
+            inc si
+            cmp si, 8d
+            jnz ciclo2
+            
+    fin:
+endm
+
+verificarValor1 macro valor
+    local cero, uno, dos, fin
+
+    cmp valor, 0
+    jz cero
+
+    cmp valor, 1
+    jz uno
+
+    dos:
+        mov color, 14d
+        mov individual[0], "N"
+        jmp fin
+
+    uno:
+        mov color, 11d
+        mov individual[0], "B"
+        jmp fin
+
+    cero:
+        mov color, 0d
+        mov individual[0], " "
+
+    fin:
 endm
