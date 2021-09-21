@@ -38,6 +38,9 @@ include macros.asm
     pointer1 dw 0
     pointer2 dw 0
     pointerGeneral dw 0
+    cellKilled dw 0
+    colKilled dw 0
+    rowKilled dw 0
     
     iteradorI dw 0
     iteradorJ dw 0
@@ -138,13 +141,11 @@ include macros.asm
             cmp tablero[di], 0d
             jnz ocupada
             mov tablero[di], 1d
-
             obtenerIndice fila1, columna1
             mov si, indice
             mov tablero[si], 0d
+            validateScore fila1, fila2, columna1, columna2
             jmp blackTurn
-
-            inc iteradorTable
 
         blackTurn:
             print name2

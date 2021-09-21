@@ -523,3 +523,52 @@ verificarValor1 macro valor
 
     fin:
 endm
+
+validateScore macro row1, row2, col1, col2
+    local validateCols, getCol, markWin, fin
+    ; B2
+    xor ax, ax
+    xor bx, bx
+    xor cx, cx
+    xor di, di
+
+    mov ax, row1    ; 4
+    mov bx, row2    ; 2
+    sub ax, bx      ; 2
+    cmp ax, 2       ; true
+    je validateCols
+    jmp fin
+
+    validateCols:
+        inc bx              ; 3
+        mov rowKilled, bx   ; row -> 3
+        
+        xor ax, ax
+        xor bx, bx
+        mov ax, col1        ; 2
+        mov bx, col2        ; 0
+
+        cmp bx, ax          ; ¿0 = 2?
+        jl getCol           ; ir si 0<2
+        mov cx, ax          
+        dec cx              
+        mov colKilled, cx   
+        jmp fin
+    
+    getCol:
+        mov cx, bx              ; 0
+        inc cx                  ; 1
+        mov colKilled, cx       ; col -> 1
+
+    obtenerIndice rowKilled, colKilled
+    mov di, indice
+    cmp tablero[di], 0d
+    jne markWin
+    jmp fin
+
+    markWin:
+        mov tablero[di], 0d
+
+    fin:
+
+endm
