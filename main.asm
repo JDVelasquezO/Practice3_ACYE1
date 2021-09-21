@@ -24,6 +24,7 @@ include macros.asm
     mensajeOcupada db "casilla ocupada, intenta otra vez$"
     mensajeBadMoveV db " no puedes moverte de forma vertical, solo diagonal$"
     mensajeBadMoveH db " no puedes moverte de forma horizontal, solo diagonal$"
+    mensajeBadPlayer db " no puedes mover fichas que no son tuyas$"
 
     bufferP1 db 50 dup("$"), "$"
     bufferP2 db 50 dup("$"), "$"
@@ -89,6 +90,7 @@ include macros.asm
             jmp menu_offset
 
         play:
+            clearTerminal
             cmp bufferP1[0], "$"
             je invalidName
             cmp bufferP2[0], "$"
@@ -96,6 +98,11 @@ include macros.asm
 
             ImprimirEspacio al
             print tokenP1
+            ImprimirEspacio al
+
+            ; Impresion de tablero
+            imprimirMatriz
+
             readUntilEnter bufferKey
 
             cmp bufferKey[0], "1"
@@ -109,15 +116,7 @@ include macros.asm
             jmp menu_offset
 
         whiteTurn:
-            ; Impresion de tablero
-            imprimirMatriz
-
             ; Impresiones de turno
-            ImprimirEspacio al
-            ImprimirEspacio al
-            ImprimirEspacio al
-            ImprimirEspacio al
-            ImprimirEspacio al
             print name1
             print bufferP1
             ImprimirEspacio al
@@ -181,6 +180,7 @@ include macros.asm
             imprimir mensajeOcupada, 10001110b
             imprimir salto, 0d
             imprimir salto, 0d
+            readUntilEnter bufferKey
             jmp whiteTurn
 
         exit:

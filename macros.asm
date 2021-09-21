@@ -413,7 +413,7 @@ leerCelda macro name
         imprimir salto, 0d
         imprimir salto, 0d
         jmp inicio
-    
+
     fin:
 endm
 
