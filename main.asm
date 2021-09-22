@@ -16,7 +16,7 @@ include macros.asm
     name1 db "Nombre de jugador 1: $"
     name2 db "Nombre de jugador 2: $"
     fichaBlanca db "Turno Ficha: Blanca $"
-    fichaNegra db "Turno Ficha Negra: $"
+    fichaNegra db "Turno Ficha: Negra $"
     tokenP1 db "Color de ficha jugador 1 B/N [1/2]: $"
     digitEnter db " mueve la ficha de tu gusto: $"
     valida db " ingresa un valor valido. $"
@@ -55,6 +55,10 @@ include macros.asm
     columna1 dw 0
     columna2 dw 0
     indice dw 0
+    msgStoreP1 db "Punteo P1: $"
+    msgStoreP2 db "Punteo P2: $"
+    storeP1 db 0
+    storeP2 db 0
     
     cabecerasF db "12345678$"
     cabecerasC db "ABCDEFGH$"
@@ -120,11 +124,18 @@ include macros.asm
 
         whiteTurn:
             ; Impresiones de turno
+            clearTerminal
             print name1
             print bufferP1
             ImprimirEspacio al
             print fichaBlanca
             ImprimirEspacio al
+            print msgStoreP1
+            
+            xor bx, bx
+            mov bl, storeP1
+            printRegister bl
+
             ImprimirEspacio al
             ImprimirEspacio al
             
@@ -148,10 +159,18 @@ include macros.asm
             jmp blackTurn
 
         blackTurn:
+            clearTerminal
             print name2
             print bufferP2
             ImprimirEspacio al
             print fichaNegra
+            ImprimirEspacio al
+            print msgStoreP2
+            
+            xor bx, bx
+            mov bh, storeP2
+            printRegister bh
+
             ImprimirEspacio al
             ImprimirEspacio al
 
@@ -172,9 +191,8 @@ include macros.asm
             obtenerIndice fila1, columna1
             mov si, indice
             mov tablero[si], 0d
+            validateScore2 fila1, fila2, columna1, columna2
             jmp whiteTurn
-
-            inc iteradorTable
 
         ocupada:
             imprimir salto, 0d

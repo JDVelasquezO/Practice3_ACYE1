@@ -569,7 +569,57 @@ validateScore macro row1, row2, col1, col2
 
     markWin:
         mov tablero[di], 0d
+        inc storeP1
 
     fin:
+endm
 
+validateScore2 macro row1, row2, col1, col2
+    local validateCols, getCol, markWin, fin, getIndex
+    
+    xor ax, ax
+    xor bx, bx
+    xor cx, cx
+    xor di, di
+
+    mov ax, row1    ; 1
+    mov bx, row2    ; 3
+    sub bx, ax      ; 2
+    cmp bx, 2       ; true
+    je validateCols
+    jmp fin
+
+    validateCols:
+        inc ax              ; 2
+        mov rowKilled, ax   ; row -> 2
+        
+        xor ax, ax
+        xor bx, bx
+        mov ax, col1        ; 6
+        mov bx, col2        ; 4
+
+        cmp bx, ax          ; ¿4 = 6?
+        jl getCol           ; ir si 4<6
+        mov cx, ax          
+        inc cx              
+        mov colKilled, cx   
+        jmp getIndex
+    
+    getCol:
+        mov cx, bx              ; 4
+        inc cx                  ; 5
+        mov colKilled, cx       ; col -> 5
+
+    getIndex:
+        obtenerIndice rowKilled, colKilled
+        mov di, indice
+        cmp tablero[di], 0d
+        jne markWin
+        jmp fin
+
+    markWin:
+        mov tablero[di], 0d
+        inc storeP2
+
+    fin:
 endm
