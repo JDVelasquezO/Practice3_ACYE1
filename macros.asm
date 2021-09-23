@@ -10,6 +10,45 @@ imprimir macro cadena, color
     int 21h ;Interrupcion para mostrar print()
 endm
 
+; IMPRIMIR NUMERO DE DOS DIGITOS
+; -------------------------------------------
+ImprimirNumero macro registro
+    push ax
+    push dx
+
+
+    mov dl,registro
+    ;ah = 2
+    add dl,48
+    mov ah,02h
+    int 21h
+
+
+    pop dx
+    pop ax
+endm
+
+Imprimir8bits macro registro
+    local cualquiera,noz
+    xor ax,ax
+    mov al,registro
+    mov cx,10
+    mov bx,3
+    cualquiera:
+    xor dx,dx
+    div cx
+    push dx
+    dec bx
+    jnz cualquiera
+    mov bx,3
+    noz:
+    pop dx
+    ImprimirNumero dl
+    dec bx
+    jnz noz
+endm
+; -------------------------------------------
+
 print macro string
 
     mov dx, offset string		; mover donde empieza el mensaje
@@ -499,7 +538,7 @@ reImprimirMatriz macro
 endm
 
 verificarValor1 macro valor
-    local cero, uno, dos, tres, fin
+    local cero, uno, dos, tres, cuatro, fin
 
     cmp valor, 0
     jz cero
@@ -513,6 +552,13 @@ verificarValor1 macro valor
     cmp valor, 3
     jz tres
 
+    cmp valor, 4
+    jz cuatro
+
+    cuatro:
+        mov color, 12d
+        mov individual[0], "R"
+        jmp fin
     tres:
         mov color, 13d
         mov individual[0], "R"
@@ -636,6 +682,7 @@ validateScore2 macro row1, row2, col1, col2
 endm
 
 validateCheckers macro fila2, columna2
+    local createCheckers, fin
 
     xor ax, ax
     xor di, di
@@ -653,5 +700,58 @@ validateCheckers macro fila2, columna2
         mov tablero[di], 3d
         verificarValor tablero[di]
         reImprimirMatriz
+    fin:
+endm
+
+validateCheckers2 macro fila2, columna2
+    local createCheckers, fin
+
+    xor ax, ax
+    xor di, di
+    cmp fila2, 7d
+    je createCheckers
+    jmp fin
+
+    createCheckers:
+        ImprimirEspacio al
+        print bufferP1
+        print mensajeDama
+        ; readUntilEnter bufferKey
+        obtenerIndice fila2, columna2
+        mov di, indice
+        mov tablero[di], 4d
+        verificarValor tablero[di]
+        reImprimirMatriz
+    fin:
+endm
+
+validateWinner macro
+    local ciclo, ciclo2, fin, looser
+
+    xor di, di
+    ciclo:
+        cmp tablero[di], 1d
+        je fin
+        inc di
+        cmp di, 64
+        jne ciclo
+    
+    xor si, si
+    ciclo2:
+        cmp tablero[si], 3d
+        je fin
+        inc si
+        cmp si, 64
+        jne ciclo2
+
+    looser:
+        ImprimirEspacio al
+        print bufferP2
+        print mensajeGanador
+        ImprimirEspacio al
+        print bufferP1
+        print mensajePerdedor
+        readUntilEnter bufferKey
+
     fin:
 endm

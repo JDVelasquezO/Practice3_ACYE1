@@ -26,6 +26,8 @@ include macros.asm
     mensajeBadMoveH db " no puedes moverte de forma horizontal, solo diagonal$"
     mensajeBadPlayer db " no puedes mover fichas que no son tuyas$"
     mensajeDama db " creaste una dama$"
+    mensajePerdedor db " has perdido$"
+    mensajeGanador db " has ganado$"
 
     bufferP1 db 50 dup("$"), "$"
     bufferP2 db 50 dup("$"), "$"
@@ -58,8 +60,10 @@ include macros.asm
     indice dw 0
     msgStoreP1 db "Punteo P1: $"
     msgStoreP2 db "Punteo P2: $"
-    storeP1 db 0
+    storeP1 db 12
     storeP2 db 0
+    counterWhites dw 0
+    counterBlack dw 0
     
     cabecerasF db "12345678$"
     cabecerasC db "ABCDEFGH$"
@@ -133,9 +137,10 @@ include macros.asm
             ImprimirEspacio al
             print msgStoreP1
             
-            xor bx, bx
-            mov bl, storeP1
-            printRegister bl
+            Imprimir8bits storeP1
+            ; xor bx, bx
+            ; mov bx, storeP1
+            ; printRegister bl
 
             ImprimirEspacio al
             ImprimirEspacio al
@@ -174,6 +179,7 @@ include macros.asm
             mov tablero[si], 0d
             validateScore fila1, fila2, columna1, columna2
             validateCheckers fila2, columna2
+            validateWinner
             jmp blackTurn
 
         paintTableCheeckers:
@@ -192,9 +198,10 @@ include macros.asm
             ImprimirEspacio al
             print msgStoreP2
             
-            xor bx, bx
-            mov bh, storeP2
-            printRegister bh
+            Imprimir8bits storeP2
+            ; xor bx, bx
+            ; mov bx, storeP2
+            ; printRegister bl
 
             ImprimirEspacio al
             ImprimirEspacio al
@@ -211,13 +218,33 @@ include macros.asm
             mov di, indice
             cmp tablero[di], 0d
             jnz ocupada2
+
+            ; Verificar si es reina
+            obtenerIndice fila1, columna1
+            mov si, indice
+            cmp tablero[si], 3d
+            je paintTableCheeckers2
+
+            obtenerIndice fila2, columna2
+            mov di, indice
             mov tablero[di], 2d
 
+            movCheeckers2:
+            xor si, si
             obtenerIndice fila1, columna1
             mov si, indice
             mov tablero[si], 0d
             validateScore2 fila1, fila2, columna1, columna2
+            validateCheckers2 fila2, columna2
+            validateWinner
             jmp whiteTurn
+        
+        paintTableCheeckers2:
+            xor di, di
+            obtenerIndice fila2, columna2
+            mov di, indice
+            mov tablero[di], 3d
+            jmp movCheeckers2
 
         ocupada:
             imprimir salto, 0d
