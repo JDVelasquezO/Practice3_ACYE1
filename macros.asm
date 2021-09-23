@@ -499,13 +499,24 @@ reImprimirMatriz macro
 endm
 
 verificarValor1 macro valor
-    local cero, uno, dos, fin
+    local cero, uno, dos, tres, fin
 
     cmp valor, 0
     jz cero
 
     cmp valor, 1
     jz uno
+
+    cmp valor, 2
+    jz dos
+
+    cmp valor, 3
+    jz tres
+
+    tres:
+        mov color, 13d
+        mov individual[0], "R"
+        jmp fin
 
     dos:
         mov color, 14d
@@ -526,7 +537,7 @@ endm
 
 validateScore macro row1, row2, col1, col2
     local validateCols, getCol, markWin, fin, getIndex
-    
+
     xor ax, ax
     xor bx, bx
     xor cx, cx
@@ -621,5 +632,26 @@ validateScore2 macro row1, row2, col1, col2
         mov tablero[di], 0d
         inc storeP2
 
+    fin:
+endm
+
+validateCheckers macro fila2, columna2
+
+    xor ax, ax
+    xor di, di
+    cmp fila2, 0d
+    je createCheckers
+    jmp fin
+
+    createCheckers:
+        ImprimirEspacio al
+        print bufferP1
+        print mensajeDama
+        ; readUntilEnter bufferKey
+        obtenerIndice fila2, columna2
+        mov di, indice
+        mov tablero[di], 3d
+        verificarValor tablero[di]
+        reImprimirMatriz
     fin:
 endm

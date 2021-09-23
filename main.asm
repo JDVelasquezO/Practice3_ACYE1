@@ -25,6 +25,7 @@ include macros.asm
     mensajeBadMoveV db " no puedes moverte de forma vertical, solo diagonal$"
     mensajeBadMoveH db " no puedes moverte de forma horizontal, solo diagonal$"
     mensajeBadPlayer db " no puedes mover fichas que no son tuyas$"
+    mensajeDama db " creaste una dama$"
 
     bufferP1 db 50 dup("$"), "$"
     bufferP2 db 50 dup("$"), "$"
@@ -149,14 +150,38 @@ include macros.asm
             xor ax, ax
             obtenerIndice fila2, columna2
             mov di, indice
+
+            ; Validar si posicion en tablero esta ocupada
             cmp tablero[di], 0d
             jnz ocupada
+            
+            ; Verificar si es reina
+            obtenerIndice fila1, columna1
+            mov si, indice
+            cmp tablero[si], 3d
+            je paintTableCheeckers
+
+            ; Si no es reina, se pinta normal
+            obtenerIndice fila2, columna2
+            mov di, indice
             mov tablero[di], 1d
+            
+            movCheeckers:
+            ; Dejar la posicion anterior vacía
+            xor si, si
             obtenerIndice fila1, columna1
             mov si, indice
             mov tablero[si], 0d
             validateScore fila1, fila2, columna1, columna2
+            validateCheckers fila2, columna2
             jmp blackTurn
+
+        paintTableCheeckers:
+            xor di, di
+            obtenerIndice fila2, columna2
+            mov di, indice
+            mov tablero[di], 3d
+            jmp movCheeckers
 
         blackTurn:
             clearTerminal
@@ -185,7 +210,7 @@ include macros.asm
             obtenerIndice fila2, columna2
             mov di, indice
             cmp tablero[di], 0d
-            jnz ocupada
+            jnz ocupada2
             mov tablero[di], 2d
 
             obtenerIndice fila1, columna1
@@ -201,6 +226,14 @@ include macros.asm
             imprimir salto, 0d
             readUntilEnter bufferKey
             jmp whiteTurn
+
+        ocupada2:
+            imprimir salto, 0d
+            imprimir mensajeOcupada, 10001110b
+            imprimir salto, 0d
+            imprimir salto, 0d
+            readUntilEnter bufferKey
+            jmp blackTurn
 
         exit:
             mov ah, 4ch
