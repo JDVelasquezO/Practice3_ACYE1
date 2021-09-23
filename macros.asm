@@ -559,6 +559,7 @@ verificarValor1 macro valor
         mov color, 12d
         mov individual[0], "R"
         jmp fin
+        
     tres:
         mov color, 13d
         mov individual[0], "R"

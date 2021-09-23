@@ -60,7 +60,7 @@ include macros.asm
     indice dw 0
     msgStoreP1 db "Punteo P1: $"
     msgStoreP2 db "Punteo P2: $"
-    storeP1 db 12
+    storeP1 db 0
     storeP2 db 0
     counterWhites dw 0
     counterBlack dw 0
@@ -138,9 +138,6 @@ include macros.asm
             print msgStoreP1
             
             Imprimir8bits storeP1
-            ; xor bx, bx
-            ; mov bx, storeP1
-            ; printRegister bl
 
             ImprimirEspacio al
             ImprimirEspacio al
@@ -153,10 +150,18 @@ include macros.asm
             xor di, di
             xor si, si
             xor ax, ax
-            obtenerIndice fila2, columna2
+
+            ; Validar la ficha correcta
+            obtenerIndice fila1, columna1
             mov di, indice
+            cmp tablero[di], 2d
+            je noTurnPlayer
+            cmp tablero[di], 4d
+            je noTurnPlayer
 
             ; Validar si posicion en tablero esta ocupada
+            obtenerIndice fila2, columna2
+            mov di, indice
             cmp tablero[di], 0d
             jnz ocupada
             
@@ -182,6 +187,14 @@ include macros.asm
             validateWinner
             jmp blackTurn
 
+        noTurnPlayer:
+            imprimir salto, 0d
+            imprimir mensajeBadPlayer, 10001110b
+            imprimir salto, 0d
+            imprimir salto, 0d
+            readUntilEnter bufferKey
+            jmp whiteTurn
+
         paintTableCheeckers:
             xor di, di
             obtenerIndice fila2, columna2
@@ -199,9 +212,6 @@ include macros.asm
             print msgStoreP2
             
             Imprimir8bits storeP2
-            ; xor bx, bx
-            ; mov bx, storeP2
-            ; printRegister bl
 
             ImprimirEspacio al
             ImprimirEspacio al
@@ -214,6 +224,16 @@ include macros.asm
             xor di, di
             xor si, si
             xor ax, ax
+
+            ; Validar la ficha correcta
+            obtenerIndice fila1, columna1
+            mov di, indice
+            cmp tablero[di], 1d
+            je noTurnPlayer2
+            cmp tablero[di], 3d
+            je noTurnPlayer2
+
+            ; Verificar si está ocupada
             obtenerIndice fila2, columna2
             mov di, indice
             cmp tablero[di], 0d
@@ -222,7 +242,7 @@ include macros.asm
             ; Verificar si es reina
             obtenerIndice fila1, columna1
             mov si, indice
-            cmp tablero[si], 3d
+            cmp tablero[si], 4d
             je paintTableCheeckers2
 
             obtenerIndice fila2, columna2
@@ -238,12 +258,20 @@ include macros.asm
             validateCheckers2 fila2, columna2
             validateWinner
             jmp whiteTurn
+
+        noTurnPlayer2:
+            imprimir salto, 0d
+            imprimir mensajeBadPlayer, 10001110b
+            imprimir salto, 0d
+            imprimir salto, 0d
+            readUntilEnter bufferKey
+            jmp blackTurn
         
         paintTableCheeckers2:
             xor di, di
             obtenerIndice fila2, columna2
             mov di, indice
-            mov tablero[di], 3d
+            mov tablero[di], 4d
             jmp movCheeckers2
 
         ocupada:
