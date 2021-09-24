@@ -345,12 +345,16 @@ imprimirMatriz macro
 endm
 
 leerCelda macro name
-    local inicio, ciclo, ciclo2, ciclo3, ciclo4, asignar, asignar2, asignar3, asignar4, badMoveVertical, badMoveHorizontal, fin
+    local inicio, ciclo, ciclo2, ciclo3, ciclo4, asignar, asignar2, asignar3, asignar4, badMoveVertical, badMoveHorizontal, fin, generateReport
 
     inicio:
         print name, 15d
         print digitEnter
         readUntilEnter bufferTeclado
+
+        cmp bufferTeclado[0], "R"
+        je generateReport
+
         xor ax, ax
         xor bx, bx
         xor si, si
@@ -452,6 +456,11 @@ leerCelda macro name
         imprimir salto, 0d
         imprimir salto, 0d
         jmp inicio
+
+    generateReport:
+        clearTerminal
+        print mensajeReporte
+        readUntilEnter bufferKey
 
     fin:
 endm
@@ -559,7 +568,7 @@ verificarValor1 macro valor
         mov color, 12d
         mov individual[0], "R"
         jmp fin
-        
+
     tres:
         mov color, 13d
         mov individual[0], "R"
@@ -753,6 +762,39 @@ validateWinner macro
         print bufferP1
         print mensajePerdedor
         readUntilEnter bufferKey
+        mov someWinner, 1d
+
+    fin:
+endm
+
+validateWinner2 macro
+    local ciclo, ciclo2, fin, looser
+
+    xor di, di
+    ciclo:
+        cmp tablero[di], 2d
+        je fin
+        inc di
+        cmp di, 64
+        jne ciclo
+    
+    xor si, si
+    ciclo2:
+        cmp tablero[si], 4d
+        je fin
+        inc si
+        cmp si, 64
+        jne ciclo2
+
+    looser:
+        ImprimirEspacio al
+        print bufferP1
+        print mensajeGanador
+        ImprimirEspacio al
+        print bufferP2
+        print mensajePerdedor
+        readUntilEnter bufferKey
+        mov someWinner, 1d
 
     fin:
 endm

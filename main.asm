@@ -28,6 +28,8 @@ include macros.asm
     mensajeDama db " creaste una dama$"
     mensajePerdedor db " has perdido$"
     mensajeGanador db " has ganado$"
+    salir db "Desea volver a jugar [y/n]: $"
+    mensajeReporte db "Generando reporte... $"
 
     bufferP1 db 50 dup("$"), "$"
     bufferP2 db 50 dup("$"), "$"
@@ -67,6 +69,8 @@ include macros.asm
     
     cabecerasF db "12345678$"
     cabecerasC db "ABCDEFGH$"
+
+    someWinner db 0
 
 .code
     main proc
@@ -185,6 +189,10 @@ include macros.asm
             validateScore fila1, fila2, columna1, columna2
             validateCheckers fila2, columna2
             validateWinner
+            validateWinner2
+
+            cmp someWinner, 1d
+            je repetir
             jmp blackTurn
 
         noTurnPlayer:
@@ -257,6 +265,10 @@ include macros.asm
             validateScore2 fila1, fila2, columna1, columna2
             validateCheckers2 fila2, columna2
             validateWinner
+            validateWinner2
+
+            cmp someWinner, 1d
+            je repetir
             jmp whiteTurn
 
         noTurnPlayer2:
@@ -289,6 +301,15 @@ include macros.asm
             imprimir salto, 0d
             readUntilEnter bufferKey
             jmp blackTurn
+
+        repetir:
+            imprimir salto, 0d
+            imprimir salto, 0d
+            imprimir salir, 15d
+            readUntilEnter bufferTeclado
+            cmp bufferTeclado[0], "y"
+            jz play
+            jmp exit
 
         exit:
             mov ah, 4ch
