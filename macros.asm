@@ -1,3 +1,5 @@
+include archivos.asm
+
 imprimir macro cadena, color
     mov ax, @data ;Moviendo el segmento de data al registro de proposito general
     mov ds, ax
@@ -48,6 +50,40 @@ Imprimir8bits macro registro
     jnz noz
 endm
 ; -------------------------------------------
+VerNumero macro registro
+    push ax
+    push dx
+
+
+    mov dl,registro
+    ;ah = 2
+    add dl,48
+    mov bufferNumber, dl
+
+
+    pop dx
+    pop ax
+endm
+
+convertir8bits macro registro
+    local cualquiera,noz
+    xor ax,ax
+    mov al,registro
+    mov cx,10
+    mov bx,3
+    cualquiera:
+    xor dx,dx
+    div cx
+    push dx
+    dec bx
+    jnz cualquiera
+    mov bx,3
+    noz:
+    pop dx
+    VerNmero dl
+    dec bx
+    jnz noz
+endm
 
 print macro string
 
@@ -460,8 +496,150 @@ leerCelda macro name
     generateReport:
         clearTerminal
         print mensajeReporte
+        CreateFile input, handle
+        OpenFile input, handle
+        ; HEAD
+        WriteFile handle, doctype, 15
+        WriteFile handle, lang, 6
+        WriteFile handle, initHead, 6
+        WriteFile handle, linkBulma, 89
+        WriteFile handle, titleReports, 22
+        WriteFile handle, finHead, 7
+
+        ; BODY
+        WriteFile handle, initBody, 6
+        ; HEADER
+        WriteFile handle, initHeader, 8
+        WriteFile handle, initNav, 87
+        WriteFile handle, initNavbar, 26
+        WriteFile handle, titleBody, 46
+        WriteFile handle, endNavbar, 6
+        WriteFile handle, endNav, 6
+        WriteFile handle, endHeader, 9
+        ; MAIN
+        WriteFile handle, initMain, 29
+        WriteFile handle, initCols, 21
+        WriteFile handle, initTableCol, 28
+        WriteFile handle, initThead, 7
+        WriteFile handle, initRowPlayers, 4
+        WriteFile handle, namePlayerHeader, 28
+        WriteFile handle, scorePlayerHeader, 28
+        WriteFile handle, endRowPlayers, 5
+        WriteFile handle, endThead, 8
+
+        WriteFile handle, initTbody, 7
+        
+        WriteFile handle, initRowPlayers, 4
+        WriteFile handle, initTd, 4
+        WriteFile handle, bufferP1, 2
+        WriteFile handle, endTd, 5
+        WriteFile handle, initTd, 4
+        ; convertir8bits storeP1
+        ; mov storeP1, bufferNumber
+        WriteFile handle, storeP1, 3
+        WriteFile handle, endTd, 5
+        WriteFile handle, endRowPlayers, 5
+
+        WriteFile handle, initRowPlayers, 4
+        WriteFile handle, initTd, 4
+        WriteFile handle, bufferP2, 3
+        WriteFile handle, endTd, 5
+        WriteFile handle, initTd, 4
+        ; convertir8bits storeP2
+        ; mov storeP2, bufferNumber
+        WriteFile handle, storeP2, 3
+        WriteFile handle, endTd, 5
+        WriteFile handle, endRowPlayers, 5
+
+        WriteFile handle, endTbody, 8
+
+        WriteFile handle, endTableCol, 8
+
+        WriteFile handle, initColTable, 20
+        WriteFile handle, labelTable, 31
+        WriteFile handle, tabForTable, 33
+        
+        WriteFile handle, initRowPlayers, 4
+        printCol
+        WriteFile handle, endRowPlayers, 5
+
+        printRow
+
+        WriteFile handle, endCols, 6
+
+        WriteFile handle, endCols, 6
+        WriteFile handle, endMain, 7
+
+        WriteFile handle, endBody, 7
+        WriteFile handle, endHtml, 7
+        CloseFile handle
         readUntilEnter bufferKey
 
+    fin:
+endm
+
+printCol macro
+    local ciclo, fin
+    xor di, di
+    ciclo:
+        WriteFile handle, initTd, 4
+        mov bl, cabecerasC[di]
+        mov individual[0], bl
+        WriteFile handle, individual, 1
+        WriteFile handle, endTd, 5
+        inc di
+        cmp di, 8d
+        jne ciclo
+        jmp fin
+    
+    fin:
+endm
+
+printRow macro
+    local ciclo, fin
+    xor si, si
+    ciclo:
+        WriteFile handle, initRowPlayers, 4
+        
+        WriteFile handle, initTd, 4
+        mov bl, cabecerasF[si]
+        mov individual[0], bl
+        WriteFile handle, individual, 1
+        WriteFile handle, endTd, 5
+
+        printCell
+        WriteFile handle, endRowPlayers, 5
+        inc si
+        cmp si, 8d
+        jne ciclo
+        jmp fin
+
+    fin:
+endm
+
+printCell macro
+    local ciclo, fin
+    xor di, di
+    ciclo:
+        WriteFile handle, initTd, 4
+        
+        mov pointer1, si
+        mov pointer2, di
+        obtenerIndice pointer1, pointer2
+        mov pointerGeneral, di
+        xor di, di
+        mov di, indice
+        mov bl, tablero[di]
+        verificarValor1 bl
+        WriteFile handle, individual, 1
+        xor di, di
+        mov di, pointerGeneral
+        WriteFile handle, endTd, 5
+        inc di
+        cmp di, 7d
+        jne ciclo
+        jmp fin
+    
     fin:
 endm
 

@@ -35,6 +35,7 @@ include macros.asm
     bufferP2 db 50 dup("$"), "$"
     bufferTeclado db 50 dup("$"), "$"
     bufferKey db 50 dup("$"), "$"
+    bufferNumber db 4 dup("$"), "$"
     individual db " $"
     espacio db " $"
     dobleEspacio db '  ','$'
@@ -69,8 +70,56 @@ include macros.asm
     
     cabecerasF db "12345678$"
     cabecerasC db "ABCDEFGH$"
-
     someWinner db 0
+
+    ; iniHtml db "<html><body><h1> $", 13, 10
+    ; finHtml db "</h1></body></html> $"
+    ; input db "report.htm", 00h              ; Assembler solo soporta 3 caracteres de extension
+    ; container db 200 dup(0), "$"            ; Guardar lectura
+    ; handle dw ?                             ; ? -> No importa el valor
+
+    doctype db "<!DOCTYPE html> $", 13, 10
+    lang db "<html> $", 13, 10
+    initHead db "<head> $", 13, 10
+    metaCharset db "<meta charset=", 34, "UTF-8", 34, "> $", 13, 10
+    linkBulma db "<link rel=", 34, "stylesheet", 34, "href=", 34, "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css", 34, "> $", 13, 10
+    titleReports db "<title>Reports</title> $", 13, 10
+    finHead db "</head> $", 13, 10
+    initBody db "<body> $", 13, 10
+    initHeader db "<header> $", 13, 10
+    initNav db "<nav class=", 34, "navbar has-background-link", 34, " role=", 34, "navigation", 34, " aria-label=", 34, "main navigation", 34, "> $", 13, 10
+    initNavbar db "<div class=", 34, "navbar-brand", 34, "> $", 13, 10
+    titleBody db "<h1 class=", 34, "title has-text-white", 34, ">Reportes</h1>", "$", 13, 10
+    endNavbar db "</div> $", 13, 10
+    endNav db "</nav> $", 13, 10
+    endHeader db "</header> $", 13, 10
+    initMain db "<main class=", 34, "container mt-6", 34,"> $",13, 10
+    initTd db "<td> $"
+    endTd db "</td> $"
+    initCols db "<div class=",34,"columns",34,"> $", 13, 10
+    initTableCol db "<table class=",34,"column table", 34, "> $", 13, 10
+    initThead db "<thead> $", 13, 10
+    initRowPlayers db "<tr> $",13, 10
+    namePlayerHeader db "<th><abbr>Nombre</abbr></th>", "$", 13, 10
+    scorePlayerHeader db "<th><abbr>Punteo</abbr></th>", "$", 13, 10
+    endRowPlayers db "</tr> $", 13, 10
+    endThead db "</thead> $", 13, 10
+    initTbody db "<tbody> $", 13, 10
+    endTbody db "</tbody> $", 13, 10
+    endTableCol db "</table> $", 13, 10
+    initColTable db "<div class=", 34, "column", 34,"> $", 13, 10
+    labelTable db "<p class=", 34, "subtitle", 34,">Tablero</p>"
+    tabForTable db "<table class=", 34, "table is-bordered", 34,"> $",13, 10
+    endColTable db "</div> $", 13, 10
+    endCols db "</div> $",13, 10
+    endMain db "</main> $", 13, 10
+    endBody db "</body> $",13, 10
+    endHtml db "</html> $", 13, 10
+    tdColor db "<td class=", 34, "has-background-grey-light", 34, "> $", 13, 10
+    
+    input db "report.htm", 00h              ; Assembler solo soporta 3 caracteres de extension
+    container db 200 dup(0), "$"            ; Guardar lectura
+    handle dw ?   
 
 .code
     main proc
