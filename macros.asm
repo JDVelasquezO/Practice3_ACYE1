@@ -54,12 +54,10 @@ VerNumero macro registro
     push ax
     push dx
 
-
     mov dl,registro
     ;ah = 2
     add dl,48
-    mov bufferNumber, dl
-
+    mov bufferNumber1, dl
 
     pop dx
     pop ax
@@ -80,7 +78,7 @@ convertir8bits macro registro
     mov bx,3
     noz:
     pop dx
-    VerNmero dl
+    VerNumero dl
     dec bx
     jnz noz
 endm
@@ -534,9 +532,9 @@ leerCelda macro name
         WriteFile handle, bufferP1, 2
         WriteFile handle, endTd, 5
         WriteFile handle, initTd, 4
-        ; convertir8bits storeP1
+        convertir8bits storeP1
         ; mov storeP1, bufferNumber
-        WriteFile handle, storeP1, 3
+        WriteFile handle, bufferNumber1, 3
         WriteFile handle, endTd, 5
         WriteFile handle, endRowPlayers, 5
 
@@ -545,9 +543,9 @@ leerCelda macro name
         WriteFile handle, bufferP2, 3
         WriteFile handle, endTd, 5
         WriteFile handle, initTd, 4
-        ; convertir8bits storeP2
+        convertir8bits storeP2
         ; mov storeP2, bufferNumber
-        WriteFile handle, storeP2, 3
+        WriteFile handle, bufferNumber1, 3
         WriteFile handle, endTd, 5
         WriteFile handle, endRowPlayers, 5
 

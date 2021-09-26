@@ -35,7 +35,8 @@ include macros.asm
     bufferP2 db 50 dup("$"), "$"
     bufferTeclado db 50 dup("$"), "$"
     bufferKey db 50 dup("$"), "$"
-    bufferNumber db 4 dup("$"), "$"
+    bufferNumber1 db 4 dup("$"), "$"
+    bufferNumber2 db 4 dup("$"), "$"
     individual db " $"
     espacio db " $"
     dobleEspacio db '  ','$'
